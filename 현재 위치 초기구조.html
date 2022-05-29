@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang = "ko">
+
+<head>
+    <meta charset = "UTF-8">
+    <META http-equiv = "X-UA-Compatible" content = "IE = edge">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>인쌩착장의 오늘 날씨(gps이용하여 날씨 받아오기)</title>
+</head>
+<body>
+    
+    <h2>인쌩착장의 오늘 날씨(gps이용하여 날씨 받아오기)</h2>
+
+    <h3 class ="ctemp"> 현재 온도 : </h3>
+    <h3 class ="feels_like"> 체감온도 : </h3>
+    <h3 class ="lowtemp"> 최저 온도 : </h3>
+    <h3 class ="hightemp"> 최고 온도 : </h3>
+    <h3 class ="name"> 이름 : </h3>
+    <h3 class ="icon">
+        <!-- <img src = " http://openweathermap.org/img/wn/10d.png" alt =""> rain 출력url-->
+    </h3>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+    crossorigin="anonymous"></script>
+
+
+        <script>
+function success({coords}) {
+            const latitude = coords.latitude;   // 위도
+            const longitude = coords.longitude; // 경도
+
+            alert(`위도: ${latitude}, 경도: ${longitude}`);
+            
+            $.getJSON('https://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=ce496c0285a5f06e943642c525beb374&units=metric',
+            function(
+                result){
+               //alert(result.main.temp);경고창
+                $('.ctemp').append(result.main.temp);
+                $('.feels_like').append(result.main.feels_like);
+                $('.lowtemp').append(result.main.temp_min);
+                $('.hightemp').append(result.main.temp_max);
+                $('.name').append(result.name);
+                //result.weather[0].icon
+                var wiconUrl = '<img src = " http://openweathermap.org/img/wn/'+ result.
+                weather[0].icon+',png" alt = "' + result.weather[0].description + '">'
+                $('.icon').html(wiconUrl);
+            });
+            //10d@2x.png 폰에서는 이미지가 꺠져서 이거 합쳐줘야됨  
+        }
+        function getUserLocation() {
+            if (!navigator.geolocation) {
+                throw "위치 정보가 지원되지 않습니다.";
+            }
+            navigator.geolocation.getCurrentPosition(success);
+        }
+        getUserLocation();
+        
+    </script>
+
+</body>
+</html>

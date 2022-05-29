@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatHere</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Weather All-Around</h1>
+        <div id="input">
+            <input type="text" class="cityname">
+            <input type="submit" value="Check Weather" class="btn">
+            <button class="locBtn"><img
+                    src="https://img.icons8.com/external-kmg-design-outline-color-kmg-design/32/000000/external-pin-map-and-navigation-kmg-design-outline-color-kmg-design-2.png" /></button>
+
+        </div>
+        <div id="output">
+
+        </div>
+    </div>
+    <script src="main.js"></script>
+    <script>
+        let city = document.querySelector('.cityname');
+        let btn = document.querySelector('.btn');
+        let locBtn = document.querySelector('.locBtn');
+        let output = document.getElementById('output');
+
+        btn.addEventListener('click', checkWeather);
+        function checkWeather() {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + city.value + '&units=metric&appid=1ebc5861bba83e0214cd8df3b995ffca')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    output.innerHTML = data['main']['temp'] + '°C' + `<br>` + data['weather'][0]['description'];
+                    output.style.cssText = 'background:#c3ffe5; text-align:center; width:150px;'
+                })
+                .catch(err => alert("error"));
+        }
+
+        locBtn.addEventListener('click', showPosition);
+        function showPosition() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    // document.getElementById("lat").innerHTML = lat;
+                    // document.getElementById("lon").innerHTML = lon;
+                    fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&units=metric&appid=1ebc5861bba83e0214cd8df3b995ffca')
+                        .then(response => response.json())
+                        .then(data => {
+                            output.innerHTML = `<h4>` + data['main']['temp'] + '°C and Location: ' + data['name'] + `<br>` + data['weather'][0]['description'] + `</h4>`;
+                            output.style.cssText = 'background:#c3ffe5; text-align:center; width:150px;'
+                        })
+                        .catch(err => alert("error"));
+
+                });
+
+            } else {
+                alert("Sorry, your browser does not support HTML5 geolocation.");
+            }
+        }
+    </script>
+</body>
+
+</html>
